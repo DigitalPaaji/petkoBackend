@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import PetCatRoute from "./router/petCatRoute.js"
 import ProductCatRoute from "./router/productCatRoute.js"
+import ProductRoute from "./router/productRoute.js"
+
 
 
 
@@ -28,6 +30,8 @@ app.use("/uploads",express.static(path.join(process.cwd(),"uploads")));
 
 app.use("/v1/petcat",PetCatRoute)
 app.use("/v1/productcat",ProductCatRoute)
+app.use("/v1/product",ProductRoute)
+
 
 
 

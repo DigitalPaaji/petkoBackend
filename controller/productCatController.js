@@ -1,5 +1,8 @@
 import { genteratSlug } from "../helper/generateSlug.js";
 import  ProductCat  from "../model/productCatModel.js";
+import fs from "fs"
+import path  from "path";
+
 
 export const productCatCreate= async(req,res)=>{
     try {
@@ -52,6 +55,36 @@ export const getProducts = async (req, res) => {
     });
   }
 }
+
+
+export const deleteProductCat= async(req,res)=>{
+  try {
+const {id}= req.params;
+
+const getProduct= await ProductCat.findById(id);
+if (!getProduct) {
+      return res.status(404).json({success:false, message: 'Product category not found' });
+    }
+
+const imgpath =  path.join(process.cwd(),"uploads",getProduct.img);
+
+   await fs.promises.unlink(imgpath);
+
+   await ProductCat.deleteOne({_id:id});
+   
+    return res.status(200).json({success:true, message: 'Product category deleted successfully' });
+
+
+    
+  } catch (error) {
+        return res.status(500).json({success:false, message: 'Server error while deleting product category' });
+
+    
+  }
+}
+
+
+
 
 
 
