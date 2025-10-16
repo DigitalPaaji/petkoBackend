@@ -88,3 +88,7 @@ const imgpath =  path.join(process.cwd(),"uploads",getProduct.img);
 
 
 
+
+
+
+
