@@ -2,13 +2,13 @@ import Message from "../../model/messageModel.js";
 
 export const createMessage = async (req, res) => {
   try {
-    const { name, email, number, product_id, message } = req.body;
+    const { name, email, phone, product_id, message } = req.body;
 
     // 1️⃣ Validate required fields
-    if (!name || !email || !number || !product_id || !message) {
+    if (!name || !email || !phone  || !message) {
       return res.status(400).json({
         success: false,
-        message: "All fields (name, email, number, product_id, message) are required.",
+        message: "All fields (name, email, number, message) are required.",
       });
     }
 
@@ -16,8 +16,7 @@ export const createMessage = async (req, res) => {
     const newMessage = await Message.create({
       name,
       email,
-      number,
-      product_id,
+      number:phone,
       message,
     });
 
@@ -40,7 +39,7 @@ export const createMessage = async (req, res) => {
 
 export const getAllMessage = async (req, res) => {
   try {
-    const messages = await Message.find().sort({ createdAt: -1 }).populate("product_id"); // newest first
+    const messages = await Message.find().sort({ createdAt: -1 }); // newest first
 
     return res.status(200).json({
       success: true,

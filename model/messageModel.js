@@ -10,14 +10,7 @@ const messageSchema = new mongoose.Schema({
         trim:true
     },
     number:{
-type:String,
-
-    }
-    ,
-product_id:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"products"
-},
+type:String,},
 message:{
     type:String
 },

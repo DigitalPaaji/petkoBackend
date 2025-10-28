@@ -1,5 +1,9 @@
+import Blog from "../model/blogModel.js";
 import Layout from "../model/layoutModel.js";
 import Message from "../model/messageModel.js";
+import PatCat from "../model/petCatModel.js";
+import ProductCat from "../model/productCatModel.js";
+import Product from "../model/productModel.js";
 import User from "../model/userModel.js";
 
 export const createLayout = async (req, res) => {
@@ -139,26 +143,25 @@ export const setActive = async (req, res) => {
 
 
 
-// export const getDashboardData=async(req,res)=>{
-//   try {
+export const getDashboardData=async(req,res)=>{
+  try {
     
-// const message = await Message.find().select("read");
-// const users = await User.countDocuments();
+const message = await Message.find().select("read");
+const users = await User.countDocuments();
+const PatCategory = await PatCat.countDocuments()
+const productCategory = await ProductCat.countDocuments();
+const product = await Product.countDocuments();
+ const blog =await Blog.find();
 
 
 
 
 
-
-
-
-
-
-
-//   } catch (error) {
+return res.json({success:true,message,users,PatCategory,productCategory,product,blog})
+  } catch (error) {
     
-//   }
-// }
+  }
+}
 
 
  

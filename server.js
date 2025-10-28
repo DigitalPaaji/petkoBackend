@@ -5,6 +5,9 @@ import PetCatRoute from "./router/petCatRoute.js"
 import ProductCatRoute from "./router/productCatRoute.js"
 import ProductRoute from "./router/productRoute.js"
 import LayoutRoute from "./router/layoutRoute.js"
+import AdminRoute from "./router/adminRoute.js"
+import BlogRoute from "./router/blogRoute.js"
+import couponRoute from "./router/couponRoute.js"
 
 
 import UserRoute from "./router/userRoute.js"
@@ -47,13 +50,17 @@ app.use("/v1/petcat",PetCatRoute)
 app.use("/v1/productcat",ProductCatRoute)
 app.use("/v1/product",ProductRoute)
 app.use("/v1/layout",LayoutRoute)
+app.use("/v1/admin",AdminRoute)
+app.use("/v1/blog",BlogRoute)
+app.use("/v1/coupon",couponRoute)
+
 
 
 app.use("/v1/user",UserRoute)
 app.use("/v1/message",MessageRoute)
 
 
-
+ 
 app.use("/v1/cart",CartRoute)
 app.use("/v1/address",AddressRoute)
 app.use("/v1/wishlist",WishlistRoute)

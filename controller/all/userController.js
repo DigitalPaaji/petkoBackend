@@ -1,20 +1,71 @@
 import { compairPassword, passwordHashing } from "../../helper/hanshing.js";
+import { sendMail } from "../../helper/sendMail.js";
 import { createToken } from "../../helper/tokenJWT.js";
+import Otp from "../../model/otpModel.js";
 import User from "../../model/userModel.js";
+
+
+
+
+export const sendOtp = async(req,res)=>{
+  try {
+   const { email } = req.body;
+
+     const alreadyUser = await User.findOne({ email });
+    if (alreadyUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already exists",
+      });
+    }
+
+await Otp.findOneAndDelete({ email });
+
+
+ const otp = Math.floor( Math.random()*900000).toString()
+
+
+  await sendMail(email,otp)
+    await Otp.create({email,otp})
+
+return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully",
+     
+    });
+
+  } catch (error) {
+     return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+    
+  }
+}
+
+
+
+
 
  export  const createUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password ,otp} = req.body;
+
+
 
     // Basic validation
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !otp || otp.length !=6) {
       return res.status(400).json({ 
         success: false, 
         message: "All fields (name, email, password) are required." 
       });
     }
 
-    // Check if email already exists
+
+    
+
+
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ 
@@ -23,7 +74,17 @@ import User from "../../model/userModel.js";
       });
     }
 
-    // Hash password
+    const otpuser= await Otp.findOne({email});
+    if(!otpuser){
+  return res.json({ success: false, message: "OTP not found" });
+    }
+    if(otpuser.otp != otp){
+            return res.json({success:false,message: "inveled otp"})
+
+    }
+
+await otpuser.deleteOne();
+
     const hashedPassword = await passwordHashing(password);
 
     // Create new user
@@ -131,10 +192,9 @@ export const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Login error:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error.",
+      message: error.message,
     });
   }
 };
@@ -236,6 +296,25 @@ return res.status(500).json({
 
   }
 }
+
+
+
+export const getUser= async(req,res)=>{
+  try {
+    
+    const user = req.user;
+    if(!user){
+      return res.status(401).json({success:false,message:"login first"})
+    }
+
+return res.status(200).json({success:true});
+
+
+  } catch (error) {
+    return res.status(500).json({success:false,message:error.message})
+  }
+}
+
 
 
 
