@@ -52,6 +52,14 @@ app.use("/uploads",express.static(path.join(process.cwd(),"uploads")));
 
 
 
+
+
+app.get("/",async(req,res)=>{
+  return res.json({success:true})
+})
+
+
+
 app.use("/v1/petcat",PetCatRoute)
 app.use("/v1/productcat",ProductCatRoute)
 app.use("/v1/product",ProductRoute)
