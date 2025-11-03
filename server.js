@@ -55,6 +55,7 @@ const app = express();
 
 
 app.get("/",async(req,res)=>{
+  console.log("work")
   return res.json({success:true})
 })
 
