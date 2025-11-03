@@ -18,7 +18,7 @@ const {
     
   let images = [];
     if (req.files && req.files.length > 0) {
-      images = req.files.map(file => file.path); 
+      images = req.files.map(file => file.filename); 
     }
          
            if (!title || !description) {
@@ -183,13 +183,13 @@ export const getTop5 = async (req, res) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 }).limit(5).select("images title updatedAt tag slug description");
 
-    const tags = await Blog.distinct("tag", { tag: { $ne: null, $ne: "" } });
+    // const tags = await Blog.distinct("tag", { tag: { $ne: null, $ne: "" } });
 
     return res.status(200).json({
       success: true,
       
       blogs,
-      tags,
+      // tags,
     });
   } catch (error) {
     return res.status(500).json({

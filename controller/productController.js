@@ -136,8 +136,6 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
- 
-
 
 export const getProductByslug = async (req, res) => {
   const { slug } = req.params;
@@ -376,10 +374,10 @@ export const froentProduct = async (req, res) => {
     // Calculate skip value
     const skip = (pageNum - 1) * limitNum;
     const filter = {};
-
+filter.status="active";
 
       if (pet) {
-      filter.petcategory = pet; // assuming pet is stored as ObjectId or String in Product model
+      filter.petcategory = pet; 
     }
 
     if (minPrice || maxPrice) {
@@ -420,6 +418,47 @@ export const froentProduct = async (req, res) => {
     });
   }
 };
+
+
+export const featureProduct = async (req, res) => {
+  try {
+    const { get = "isFeatured" } = req.query;
+    let products;
+
+    if (get === "isFeatured") {
+      products = await Product.find({ isFeatured: true });
+    } else if (get === "new") {
+      products = await Product.find().sort({ createdAt: -1 });
+    } else if (get === "best") {
+      products = await Product.find().sort({ ordercount: -1 });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid query type. Use ?get=isFeatured | new | best",
+      });
+    }
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No products found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching featured products.",
+    });
+  }
+};
+
 
 export const searchProduct= async(req,res)=>{
   try {

@@ -38,6 +38,14 @@ export const addAddress = async (req, res) => {
       });
     }
 
+   await Address.updateMany(
+  { userid: user._id },     
+  { $set: { default: false } }
+                 );
+
+
+
+
     const newAddress = await Address.create({
       firstName,
       lastName,
@@ -49,6 +57,7 @@ export const addAddress = async (req, res) => {
       country,
       phone,
       userid: user._id,
+      default:true
     });
 
     return res.status(201).json({
@@ -64,7 +73,7 @@ export const addAddress = async (req, res) => {
   }
 };
 
-
+ 
 
 export const getAddress = async (req, res) =>{
 

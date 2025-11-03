@@ -4,7 +4,7 @@ const cartSchema = new mongoose.Schema(
   {
     productId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "products", 
+      ref: "Product", 
       required: true,
     },
     userId: {
@@ -12,16 +12,11 @@ const cartSchema = new mongoose.Schema(
       ref: "users", 
       required: true,
     },
-    colorprodutid:{
-         type: mongoose.Schema.Types.ObjectId,
-      ref: "colorproduct", 
-      required: true,
-    },
 
     quantity: {
       type: Number,
       default: 1,
-      min: [1, "Quantity cannot be less than 1"], // ✅ Add validation
+      min: [1, "Quantity cannot be less than 1"],
     },
     price: {
       type: Number,
@@ -32,9 +27,9 @@ const cartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ Optional: ensure a user can't have the same product twice in cart
-cartSchema.index({ userId: 1, colorprodutid: 1 }, { unique: true });
+cartSchema.index({ userId: 1, productId: 1 }, { unique: true });
 
 const Cart = mongoose.model("Cart", cartSchema);
 
 export default Cart;
+ 

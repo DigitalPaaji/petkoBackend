@@ -1,84 +1,86 @@
 import mongoose from "mongoose";
 
+const orderItemSchema = new mongoose.Schema({
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+  name: { type: String, required: true },
+  image: { type: String }, 
+  quantity: { type: Number, required: true, default: 1 },
+  price: { type: Number, required: true },
+});
+
+
+
+
+
 const orderSchema = new mongoose.Schema(
   {
-    orderNumber: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
-      required: [true, "User is required"],
+      ref: "users",
+      required: true,
     },
 
-    items: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "orderitem",
-        required: true,
-      },
-    ],
-    shippingaddress: {
+    orderItems: [orderItemSchema],
+
+    shippingAddress: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "address",
-      required: [true, "Shipping address is required"],
-    },
-    status: {
-      type: String,
-      enum: [
-        "pending",
-        "confirmed",
-        "processing",
-        "shipped",
-        "delivered",
-        "cancelled",
-        "refunded",
-      ],
-      default: "pending",
+      required: true,
     },
 
-    subtotal: {
-      type: Number,
-      required: true,
-      min: [0, "Subtotal cannot be negative"],
-    },
-    shippingCost: {
-      type: Number,
-      required: true,
-      min: [0, "Shipping cost cannot be negative"],
-    },
-    tax: {
-      type: Number,
-      required: true,
-      min: [0, "Tax cannot be negative"],
-    },
-    discount: {
-      type: Number,
-      default: 0,
-      min: [0, "Discount cannot be negative"],
-    },
-    total: {
-      type: Number,
-      required: true,
-      min: [0, "Total cannot be negative"],
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "Razorpay", "PayPal", "Stripe"],
+      default: "COD",
     },
 
-    notes: {
-      type: String,
-      maxlength: [500, "Notes cannot exceed 500 characters"],
+    itemsPrice: { type: Number, required: true },
+    shippingPrice: { type: Number, required: true, default: 0 },
+    taxPrice: { type: Number, default: 0 }, 
+    totalPrice: { type: Number, required: true },
+
+    coupon: {
+      code: { type: String },
+      discountType: { type: String, enum: ["percentage", "fixed"] },
+      discountValue: { type: Number },
+      discountAmount: { type: Number, default: 0 },
     },
 
-    cancellationReason: {
-      type: String,
-      maxlength: [500, "Cancellation reason cannot exceed 500 characters"],
+    isPaid: { type: Boolean, default: false },
+    paidAt: { type: Date,default:null },
+    paymentResult: {
+      id: { type: String },
+      status: { type: String },
+      update_time: { type: String },
+      email_address: { type: String },
     },
+
+    isDelivered: { type: Boolean, default: false },
+    deliveredAt: { type: Date ,default:null},
+
+    orderStatus: {
+      type: String,
+      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+      default: "Pending",
+    },
+
+    trackingId: { type: String ,default:null},
+    notes: { type: String }, 
   },
-  { timestamps: true }
+  { timestamps: true,default:null }
 );
 
-const Order = mongoose.model("order", orderSchema);
+
+
+
+
+
+
+
+const Order =  mongoose.model("Order", orderSchema);
 
 export default Order;
-

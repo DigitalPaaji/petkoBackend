@@ -6,13 +6,14 @@ import { genteratSlug } from "../helper/generateSlug.js";
 export const createPatCat = async (req, res) => {
   try {
     const { cat } = req.body;
-    const file = req.file;
+    const file = req.file.filename;
+    console.log(file)
 
     if (!cat) {
       return res.status(400).json({ error: "Cat type is required." });
     }
 
-    if (!file || !file.path) {
+    if (!file) {
       return res.status(400).json({ error: "Image file is required." });
     }
 
@@ -20,7 +21,7 @@ export const createPatCat = async (req, res) => {
 
     const newCat = await PatCat.create({
       type: cat,
-      img: file.path  ,
+      img: file,
       slug
     });
 
@@ -66,7 +67,7 @@ export const deletPetCat=async(req,res)=>{
     const {id} = req.params;
     
     const petcatFind = await PatCat.findOne({_id:id});
-    const fullPath = path.join(process.cwd(), petcatFind.img);
+    const fullPath = path.join(process.cwd(), "uploads", petcatFind.img);
 
 
 

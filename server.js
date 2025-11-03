@@ -8,6 +8,8 @@ import LayoutRoute from "./router/layoutRoute.js"
 import AdminRoute from "./router/adminRoute.js"
 import BlogRoute from "./router/blogRoute.js"
 import couponRoute from "./router/couponRoute.js"
+import bannerRoute from "./router/bannerRoute.js"
+import chargesRoute from "./router/chargesRoute.js"
 
 
 import UserRoute from "./router/userRoute.js"
@@ -17,6 +19,10 @@ import MessageRoute from "./router/messageRoute.js"
 import CartRoute from "./router/cartRoute.js"
 import AddressRoute from "./router/addressRoute.js"
 import WishlistRoute from "./router/wishlistRoute.js"
+import checkoutRoute from "./router/checkoutRoute.js"
+import orderRoute from "./router/orderRoute.js"
+
+
 
 
 
@@ -34,7 +40,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:3000", 
+  origin: process.env.FROENTEND, 
   allowedHeaders: ["Content-Type", "Authorization"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
@@ -53,6 +59,9 @@ app.use("/v1/layout",LayoutRoute)
 app.use("/v1/admin",AdminRoute)
 app.use("/v1/blog",BlogRoute)
 app.use("/v1/coupon",couponRoute)
+app.use("/v1/banner",bannerRoute)
+app.use("/v1/charges",chargesRoute)
+
 
 
 
@@ -64,6 +73,8 @@ app.use("/v1/message",MessageRoute)
 app.use("/v1/cart",CartRoute)
 app.use("/v1/address",AddressRoute)
 app.use("/v1/wishlist",WishlistRoute)
+app.use("/v1/checkout",checkoutRoute)
+app.use("/v1/order",orderRoute)
 
 
 

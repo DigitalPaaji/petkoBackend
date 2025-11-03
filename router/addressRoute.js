@@ -12,3 +12,4 @@ router.put("/update/:id",verifyUser,updateAddress)
 
 
 export default router;
+ 

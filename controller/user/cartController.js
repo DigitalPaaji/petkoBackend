@@ -2,18 +2,18 @@ import Cart from "../../model/cartModel.js";
 
 export const addToCart = async (req, res) => {
   try {
-    const { productId, price, quantity ,colorprodutid} = req.body;
+    const { productId, price, quantity } = req.body;
     const userId = req.user?._id; 
 
    
-    if (!productId || !price || !colorprodutid ) {
+    if (!productId || !price  ) {
       return res.status(400).json({
         success: false,
         message: "Product ID and price are required.",
       });
     }
 
-    const existingItem = await Cart.findOne({ userId ,colorprodutid });
+    const existingItem = await Cart.findOne({ userId , productId  });
 
     if (existingItem) {
       existingItem.quantity += quantity || 1;
@@ -29,8 +29,6 @@ export const addToCart = async (req, res) => {
     const newCartItem = await Cart.create({
       productId,
       userId,
-      colorprodutid,
-
       price,
       quantity: quantity || 1,
     });
@@ -171,7 +169,7 @@ export const getCartItem = async (req, res) => {
     }
 
     const cartItems = await Cart.find({ userId: user._id })
-      .populate("productId", "title  banner_image").populate("colorprodutid","price color instock")
+      .populate("productId" , " name images slug quantity comparePrice price").select("-userId")
       .sort({ createdAt: -1 }); 
 
     // 3️⃣ Handle empty cart

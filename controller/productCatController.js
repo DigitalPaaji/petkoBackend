@@ -57,6 +57,56 @@ export const getProducts = async (req, res) => {
 }
 
 
+export const getProductCategory = async (req, res) => {
+  try {
+    const { petId } = req.params;
+
+    // Fetch all product categories linked to a given petId
+    const productcat = await ProductCat.find({ petId });
+
+    if (!productcat || productcat.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No product categories found for this pet ID.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: productcat,
+    });
+  } catch (error) {
+    console.error("Error fetching product categories:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching product categories.",
+    });
+  }
+};
+
+
+export const getRandom = async (req, res) => {
+  try {
+    // Fetch all documents in random order
+    const data = await ProductCat.aggregate([{ $sample: { size: await ProductCat.countDocuments() } }]);
+
+    return res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching random data:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching random data.",
+    });
+  }
+};
+
+
+
+
+
 export const deleteProductCat= async(req,res)=>{
   try {
 const {id}= req.params;

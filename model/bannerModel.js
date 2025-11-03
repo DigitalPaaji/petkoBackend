@@ -1,14 +1,18 @@
 import mongoose from "mongoose";
 
   const bannerSchema =   new  mongoose.Schema({
-     pcimg:{
-        type:String,
-        required:true
-     },
-     phoneimg:{
-        type:String,
-        required:true
-     }
+    image:{
+      type:String,
+      required:true,
+    },
+    count:{
+      type:Number,
+      default:null
+    },
+    showbanner:{
+      type:Boolean,
+      default:true
+    }
 },{timestamps:true})
 
 
