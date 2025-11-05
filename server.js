@@ -90,7 +90,7 @@ app.get("/",async(req,res)=>{
 
 
 
-// const PORT = process.env.PORT || 8001;
+const PORT = process.env.PORT || 8001;
   
 // mongoose.connect(process.env.URL).then(()=>{
 app.listen(PORT,()=>{
