@@ -77,8 +77,13 @@ export const createOrder = async (req, res) => {
 
 
 
-
-
+for (const item of orderItems) {
+  await Product.findByIdAndUpdate(
+    item.product,
+    { $inc: { ordercount: item.quantity } }, 
+    { new: true }
+  );
+}
 
 
 

@@ -7,7 +7,6 @@ export const createPatCat = async (req, res) => {
   try {
     const { cat } = req.body;
     const file = req.file.filename;
-    console.log(file)
 
     if (!cat) {
       return res.status(400).json({ error: "Cat type is required." });

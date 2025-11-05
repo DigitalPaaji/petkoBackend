@@ -62,7 +62,6 @@ export const createProduct = async (req, res) => {
     }
 
     const images = req.files ? req.files.map(img => img.filename) : [];
-    console.log(req.files)
 
     const newProductData = {
       name,
@@ -227,7 +226,6 @@ if (imagesToDelete && imagesToDelete.length) {
     const imgPath = path.join(process.cwd(), "uploads", item);
     try {
       await fs.promises.unlink(imgPath);
-      console.log(`🗑️ Deleted old image: ${item}`);
     } catch (err) {
       console.warn(`⚠️ Could not delete image ${item}:`, err.message);
     }
@@ -346,7 +344,7 @@ export const deleteProduct = async (req, res) => {
 
 export const froentProduct = async (req, res) => {
   try {
-    const { sort, page = 1, limit = 10,pet, minPrice, maxPrice } = req.query;
+    const { sort, page = 1, limit = 10,pet,cat } = req.query;
 
     let sortQuery = {};
     switch (sort) {
@@ -379,21 +377,20 @@ filter.status="active";
       if (pet) {
       filter.petcategory = pet; 
     }
-
-    if (minPrice || maxPrice) {
-      filter.price = {};
-      if (minPrice) filter.price.$gte = Number(minPrice);
-      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    if(cat){
+      filter.productcategory=cat
     }
 
-    // Fetch total count for pagination info
+   
+
     const totalProducts = await Product.countDocuments(filter);
 
-    // Fetch paginated & sorted products
+
     const products = await Product.find(filter)
       .sort(sortQuery)
       .skip(skip)
       .limit(limitNum);
+
 
 
 
@@ -428,9 +425,9 @@ export const featureProduct = async (req, res) => {
     if (get === "isFeatured") {
       products = await Product.find({ isFeatured: true });
     } else if (get === "new") {
-      products = await Product.find().sort({ createdAt: -1 });
+      products = await Product.find().sort({ createdAt: 'asc'});
     } else if (get === "best") {
-      products = await Product.find().sort({ ordercount: -1 });
+      products = await Product.find().sort({ ordercount: 1});
     } else {
       return res.status(400).json({
         success: false,

@@ -1,6 +1,8 @@
 import { compairPassword, passwordHashing } from "../../helper/hanshing.js";
 import { sendMail } from "../../helper/sendMail.js";
 import { createToken } from "../../helper/tokenJWT.js";
+import Address from "../../model/addressModel.js";
+import Order from "../../model/orderModel.js";
 import Otp from "../../model/otpModel.js";
 import User from "../../model/userModel.js";
 
@@ -306,6 +308,14 @@ export const getUser= async(req,res)=>{
     if(!user){
       return res.status(401).json({success:false,message:"login first"})
     }
+    
+
+
+
+
+
+
+
 
 return res.status(200).json({success:true});
 
@@ -314,6 +324,71 @@ return res.status(200).json({success:true});
     return res.status(500).json({success:false,message:error.message})
   }
 }
+
+
+export const userDetails = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Login first to access this resource",
+      });
+    }
+
+    const addresses = await Address.find({ userid: user._id });
+    const orders = await Order.find({ user: user._id }).populate("orderItems.product shippingAddress"); // optional populate
+
+    // Return complete info
+    return res.status(200).json({
+      success: true,
+      user,
+      addresses,
+      orders,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getOrder = async (req, res) => {
+  try {
+    const { orderid } = req.params;
+
+    const order = await Order.findById(orderid).sort({ createdAt : 1 }).populate("orderItems.product")         
+      .populate("shippingAddress");    
+
+
+    // If no order found
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+
+    return res.status(200).json({
+      success: true,
+      order,
+    });
+
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+
+
 
 
 
