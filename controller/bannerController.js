@@ -1,33 +1,20 @@
 import path from "path";
 import Banner from "../model/bannerModel.js";
 import fs from "fs";
+import OtherImages from "../model/otherImagesModel.js";
 
 export const createBanner = async (req, res) => {
   try {
-    const { count } = req.body;
-    const image = req.file?.filename;
-
-    if (!image) {
-      return res.status(400).json({
-        success: false,
-        message: "Image file is required",
-      });
-    }
 
 
-    if (count) {
-      const existingBanner = await Banner.findOne({ count });
+        const imagedesktop = req.files.desktop ? req.files.desktop[0].filename : null;
+    const imagemobile = req.files.mobile ? req.files.mobile[0].filename : null;
 
-      if (existingBanner) {
-        existingBanner.count = null;
-        await existingBanner.save();
-      }
-    } 
 
 
      await Banner.create({
-      image,
-      count: count || null,
+      imagedesktop,
+      imagemobile
     });
 
     return res.status(201).json({
@@ -35,7 +22,7 @@ export const createBanner = async (req, res) => {
       message: "Banner created successfully",
     });
   } catch (error) {
-    console.error("Error creating banner:", error);
+    console.log(error.message)
     res.status(500).json({
       success: false,
       message: "Internal Server Error", 
@@ -47,7 +34,7 @@ export const createBanner = async (req, res) => {
 
 export const getslidBanner = async (req, res) => {
   try {
-    const banners = await Banner.find({ count: null });
+    const banners = await Banner.find({show :true});
 
     return res.status(200).json({
       success: true,
@@ -63,6 +50,35 @@ export const getslidBanner = async (req, res) => {
     });
   }
 };
+
+
+
+
+
+
+
+export const getAllBanner = async (req, res) => {
+  try {
+    const banners = await Banner.find({});
+
+    return res.status(200).json({
+      success: true,
+      message: "Banners fetched successfully",
+      banners,
+    });
+  } catch (error) {
+    console.error("Error fetching banners:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
 
 export const getCountBanner = async (req, res) => {
   try {
@@ -84,6 +100,8 @@ export const getCountBanner = async (req, res) => {
   }
 };
 
+
+
 export const deleteBanner = async (req, res) => {
   try {
     const { bannerid } = req.params;
@@ -103,9 +121,13 @@ export const deleteBanner = async (req, res) => {
       });
     }
 
-    const imgPath = path.join(process.cwd(), "uploads", banner.image);
+    const imagedesktop = path.join(process.cwd(), "uploads", banner.imagedesktop);
+        const imagemobile = path.join(process.cwd(), "uploads", banner.imagemobile);
+
     try {
-      await fs.promises.unlink(imgPath);
+      await fs.promises.unlink(imagedesktop);
+            await fs.promises.unlink(imagemobile);
+
     } catch (err) {
       console.warn("⚠️ Image not found or already deleted:", imgPath);
     }
@@ -125,5 +147,115 @@ export const deleteBanner = async (req, res) => {
     });
   }
 };
+
+
+export const toggleShow = async (req, res) => {
+  try {
+    const { bannerId } = req.params;
+
+    // Find the banner by ID
+    const banner = await Banner.findById(bannerId);
+
+    if (!banner) {
+      return res.status(404).json({ success: false, message: "Banner not found" });
+    }
+
+    // Toggle the show property
+    banner.show = !banner.show;
+    await banner.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Banner visibility toggled successfully",
+      data: banner,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error while toggling banner visibility",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+
+
+ export const createOtherBanner = async (req, res) => {
+  try {
+    const { count } = req.body;
+if(!count){
+   return res.status(400).json({
+        success: false,
+        message: "Count is required",
+      });
+}
+
+
+    if (!req.file || !req.file.filename) {
+      return res.status(400).json({
+        success: false,
+        message: "Image file is required",
+      });
+    }
+
+    const image = req.file.filename;
+   const allreadyBanner= await OtherImages.findOne({count});
+   
+   if(allreadyBanner){
+   const imgpath =  path.join(process.cwd(),"uploads",allreadyBanner.image);
+   fs.promises.unlink(imgpath);
+     await allreadyBanner.deleteOne()
+   }
+
+
+
+
+
+    const newBanner = await OtherImages.create({
+      image,
+      count: count,
+     
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Banner created successfully",
+      data: newBanner,
+    });
+  } catch (error) {
+    console.error("Error creating other banner:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while creating banner",
+      error: error.message,
+    });
+  }
+};
+
+
+
+export const getOtherBanner = async (req, res) => {
+  try {
+    // Fetch all other banners (latest first)
+    const banners = await OtherImages.find().sort({count :1});
+
+    return res.status(200).json({
+      success: true,
+      message: "Banners fetched successfully",
+      data: banners,
+    });
+  } catch (error) {
+    console.error("Error fetching other banners:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching banners",
+      error: error.message,
+    });
+  }
+};
+
 
 

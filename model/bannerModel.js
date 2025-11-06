@@ -1,18 +1,22 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
   const bannerSchema =   new  mongoose.Schema({
-    image:{
+    imagedesktop:{
       type:String,
       required:true,
     },
-    count:{
-      type:Number,
-      default:null
+     imagemobile:{
+      type:String,
+      required:true,
     },
-    showbanner:{
+     show:{
       type:Boolean,
       default:true
-    }
+     }
+    
+
+
 },{timestamps:true})
 
 
