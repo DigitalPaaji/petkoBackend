@@ -24,7 +24,7 @@ export const sendOtp = async(req,res)=>{
 await Otp.findOneAndDelete({ email });
 
 
- const otp = Math.floor( Math.random()*900000).toString()
+const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
 
   await sendMail(email,otp)
