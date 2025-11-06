@@ -1,6 +1,6 @@
 import express from "express";
 import uploads from "../helper/uploadImg.js";
-import { createBanner, createOtherBanner, deleteBanner, getAllBanner, getCountBanner, getOtherBanner, getslidBanner, toggleShow } from "../controller/bannerController.js";
+import { createBanner, createOtherBanner, deleteBanner, deleteOtherBanner, getAllBanner, getCountBanner, getOtherBanner, getslidBanner, toggleShow } from "../controller/bannerController.js";
 const router = express.Router();
 
 router.post("/create",uploads.fields([
@@ -17,8 +17,9 @@ router.put("/togglebanner/:bannerId",toggleShow)
 router.get("/allbanner",getAllBanner)
 
 
-router.post("/otherbanner",uploads.single("image"),createOtherBanner)
-router.get("/otherbanners",getOtherBanner)
+router.post("/otherbanner",uploads.single("image"),createOtherBanner);
+router.get("/otherbanners",getOtherBanner);
+router.delete("/otherbanner/:bannerid",deleteOtherBanner);
 
 
 

@@ -203,7 +203,7 @@ if(!count){
 
     const image = req.file.filename;
    const allreadyBanner= await OtherImages.findOne({count});
-   
+
    if(allreadyBanner){
    const imgpath =  path.join(process.cwd(),"uploads",allreadyBanner.image);
    fs.promises.unlink(imgpath);
@@ -257,5 +257,46 @@ export const getOtherBanner = async (req, res) => {
   }
 };
 
+export const deleteOtherBanner = async (req, res) => {
+  try {
+    const { bannerid } = req.params;
+
+    // Find the banner first
+    const banner = await OtherImages.findById(bannerid);
+    if (!banner) {
+      return res.status(404).json({
+        success: false,
+        message: "Banner not found",
+      });
+    }
+
+    // Delete the image file if it exists
+    const imgPath = path.join(process.cwd(), "uploads", banner.image);
+
+    try {
+      await fs.promises.unlink(imgPath);
+    } catch (fsErr) {
+      console.warn("File not found or already deleted:", imgPath);
+      // Continue anyway; file missing is not critical
+    }
+
+    // Delete the banner record from MongoDB
+    await banner.deleteOne();
+
+    return res.status(200).json({
+      success: true,
+      message: "Banner deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting other banner:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while deleting banner",
+      error: error.message,
+    });
+  }
+};
 
 
+
+ 
