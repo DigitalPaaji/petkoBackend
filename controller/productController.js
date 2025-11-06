@@ -425,9 +425,10 @@ export const featureProduct = async (req, res) => {
     if (get === "isFeatured") {
       products = await Product.find({ isFeatured: true });
     } else if (get === "new") {
-      products = await Product.find().sort({ createdAt: 'asc'});
+      products = await Product.find().sort({ createdAt: -1});
+
     } else if (get === "best") {
-      products = await Product.find().sort({ ordercount: 1});
+      products = await Product.find().sort({ ordercount: -1});
     } else {
       return res.status(400).json({
         success: false,

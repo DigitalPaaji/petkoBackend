@@ -293,6 +293,53 @@ if(isPaid){
   }
 };
 
+export const trackIDAdd = async (req, res) => {
+  try {
+    const { orderid, trackingnumber } = req.body;
+
+    // Validate input
+    if (!orderid || !trackingnumber) {
+      return res.status(400).json({
+        success: false,
+        message: "Order ID and tracking number are required",
+      });
+    }
+
+    // Update order with tracking ID
+    const order = await Order.findByIdAndUpdate(
+      orderid,
+      { trackingId: trackingnumber },
+      { new: true } // returns updated document
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Tracking ID added successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.error("Error adding tracking ID:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while adding tracking ID",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+
+
+
 
 
 
