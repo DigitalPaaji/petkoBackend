@@ -470,7 +470,7 @@ export const searchProduct= async(req,res)=>{
 
   const searchData = await Product.find({
       name: { $regex: searchproduct, $options: "i" },
-    }).select("name slug");
+    }).select("name slug images");
 
 
     if (searchData.length === 0) {
