@@ -87,7 +87,7 @@ export const getProductCategory = async (req, res) => {
 
 export const getRandom = async (req, res) => {
   try {
-    // Fetch all documents in random order
+
     const data = await ProductCat.aggregate([{ $sample: { size: await ProductCat.countDocuments() } }]);
 
     return res.status(200).json({

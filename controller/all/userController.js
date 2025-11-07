@@ -45,10 +45,6 @@ return res.status(200).json({
   }
 }
 
-
-
-
-
  export  const createUser = async (req, res) => {
   try {
     const { name, email, password ,otp} = req.body;
@@ -141,9 +137,6 @@ export const getAllUser = async (req, res) => {
   }
 };
  
-
-
-
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -216,7 +209,6 @@ export const logout= async(req,res)=>{
       
     });
 }
-
 
 export const deleteUser = async (req, res) => {
   try {
@@ -299,8 +291,6 @@ return res.status(500).json({
   }
 }
 
-
-
 export const getUser= async(req,res)=>{
   try {
     
@@ -324,7 +314,6 @@ return res.status(200).json({success:true});
     return res.status(500).json({success:false,message:error.message})
   }
 }
-
 
 export const userDetails = async (req, res) => {
   try {
@@ -385,10 +374,6 @@ export const getOrder = async (req, res) => {
     });
   }
 };
-
-
-
-
 
 
 

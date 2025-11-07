@@ -1,6 +1,7 @@
 import Blog from "../model/blogModel.js";
 import Layout from "../model/layoutModel.js";
 import Message from "../model/messageModel.js";
+import Order from "../model/orderModel.js";
 import PatCat from "../model/petCatModel.js";
 import ProductCat from "../model/productCatModel.js";
 import Product from "../model/productModel.js";
@@ -152,6 +153,7 @@ const PatCategory = await PatCat.countDocuments()
 const productCategory = await ProductCat.countDocuments();
 const product = await Product.countDocuments();
  const blog =await Blog.find();
+ 
 
 
 
@@ -162,6 +164,75 @@ return res.json({success:true,message,users,PatCategory,productCategory,product,
     
   }
 }
+
+
+
+export const getOrderAnalytics = async (req, res) => {
+  try {
+    // Fetch all orders
+    const allOrders = await Order.find();
+
+    if (!allOrders.length) {
+      return res.status(200).json({
+        success: true,
+        message: "No orders found",
+        data: {
+          totalOrders: 0,
+          totalRevenue: 0,
+          totalCustomers: 0,
+          pendingOrders: 0,
+          completedOrders: 0,
+          monthlyStats: [],
+        },
+      });
+    }
+
+    const totalOrders = allOrders.length;
+    const totalRevenue = allOrders.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
+    const totalCustomers = new Set(allOrders.map(o => o.user?.toString())).size;
+
+    const pendingOrders = allOrders.filter(o => o.orderStatus === "Pending").length;
+    const completedOrders = allOrders.filter(o => o.orderStatus === "Delivered").length;
+
+    // ---- Monthly Revenue (for charts) ----
+    const monthlyStats = Array(12).fill(0);
+    allOrders.forEach(order => {
+      const month = new Date(order.createdAt).getMonth();
+      monthlyStats[month] += order.orderItems.length || 0;
+    });
+
+const montlyrevinu= Array(12).fill(0);
+
+ allOrders.forEach(order => {
+      const month = new Date(order.createdAt).getMonth();
+      montlyrevinu[month] = montlyrevinu[month]?  montlyrevinu[month] + order.totalPrice : order.totalPrice ;
+
+    });
+
+
+    res.status(200).json({
+      success: true,
+      message: "Analytics data fetched successfully",
+      data: {
+        totalOrders,
+        totalRevenue,
+        totalCustomers,
+        pendingOrders,
+        completedOrders,
+        monthlyStats,
+        montlyrevinu,
+      },
+    });
+  } catch (error) {
+    console.error("Analytics Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while generating analytics",
+      error: error.message,
+    });
+  }
+};
+
 
 
  
